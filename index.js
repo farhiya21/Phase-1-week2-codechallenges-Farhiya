@@ -35,27 +35,27 @@ document.addEventListener("DOMContentLoaded", function() {
       ]
     };
   
-    // Get the characterList container element
+    // Firstly obtain the characterList container element
     const characterList = document.getElementById("characterList");
   
-    // Loop through the characters and create elements to display them
+    // Loop  the characters and create elements for display
     charactersData.characters.forEach(character => {
-      // Create a div element for each character
+      // Make a div element for each character
       const characterDiv = document.createElement("div");
   
-      // Create an image element and set its source
+      // Make an image element then set the source
       const characterImage = document.createElement("img");
       characterImage.src = character.image;
   
-      // Create a heading element and set its text content
+      // Make a heading element and then its text content
       const characterName = document.createElement("h3");
       characterName.textContent = character.name;
   
-      // Append the image and heading elements to the character div
+      // Attach the heading and image elements to the character div
       characterDiv.appendChild(characterImage);
       characterDiv.appendChild(characterName);
   
-      // Append the character div to the characterList container
+      // Attach the character div to the characterList container
       characterList.appendChild(characterDiv);
     });
   });
