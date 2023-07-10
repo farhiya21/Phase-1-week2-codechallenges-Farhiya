@@ -1,0 +1,6 @@
+let greeting = "Hello, world!";
+console.log(greeting); // Output: Hello, world!
+
+greeting = "Hey there!";
+console.log(greeting); // Output: Hey there!
+

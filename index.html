@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHARACTER LIST</title>
-
-    
-    </head>
-    <body>
-      <div id="characterList"></div>
+  <meta charset="UTF-8">
+  <title>CHARACTER LIST</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div id="characterList"></div>
     
       <script>
-        // JSON DATA
+        // JSON data
         const charactersData = {
           "characters": [
             {
@@ -47,29 +45,61 @@
           ]
         };
     
-        // Firstly obtain the characterList container element
+        // Get the characterList container element
         const characterList = document.getElementById("characterList");
     
-        // Loop  the characters and create elements for display 
+        // Loop through the characters and create elements to display them
         charactersData.characters.forEach(character => {
-          // Make a div element for each character
+          // Create a div element for each character
           const characterDiv = document.createElement("div");
     
-          // Make an image element then set the source
+          // Create an image element and set its source
           const characterImage = document.createElement("img");
           characterImage.src = character.image;
     
-          // Make a heading element and then its text content
+          // Create a heading element and set its text content
           const characterName = document.createElement("h3");
           characterName.textContent = character.name;
     
-          // Attach the heading and image elements to the character div
+          // Append the image and heading elements to the character div
           characterDiv.appendChild(characterImage);
           characterDiv.appendChild(characterName);
     
-          // Attach the character div to the characterList container
+          // Append the character div to the characterList container
           characterList.appendChild(characterDiv);
         });
       </script>
-    </body>
-    </html>
+  <h1>Select An Animal</h1>
+  <div id="container">
+    <div id="animals">
+      <h2>Animals</h2>
+      <ul id="animals-list"></ul>
+    </div>
+
+    <div id="animal-details">
+      <h2>Animal Details</h2>
+    </div>
+
+    <div id="controls">
+      <button id="vote-button">Vote</button>
+      
+      
+    </div>
+
+    <div id="add-animal">
+      <h2>Add Animal</h2>
+      <form id="add-animal-form">
+        <label for="animal-name">Name:</label>
+        <input type="text" id="animal-name" required>
+
+        <label for="animal-image">Image URL:</label>
+        <input type="text" id="animal-image" required>
+
+        <button type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>

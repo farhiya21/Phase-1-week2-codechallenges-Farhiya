@@ -1,61 +1,118 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // JSON DATA
-    const charactersData = {
-      "characters": [
-        {
-          "id": 1,
-          "name": "Mr. Cute",
-          "image": "https://thumbs.gfycat.com/EquatorialIckyCat-max-1mb.gif",
-          "votes": 0
-        },
-        {
-          "id": 2,
-          "name": "Mx. Monkey",
-          "image": "https://thumbs.gfycat.com/FatalInnocentAmericanshorthair-max-1mb.gif",
-          "votes": 0
-        },
-        {
-          "id": 3,
-          "name": "Ms. Zebra",
-          "image": "https://media2.giphy.com/media/20G9uNqE3K4dRjCppA/source.gif",
-          "votes": 0
-        },
-        {
-          "id": 4,
-          "name": "Dr. Lion",
-          "image": "http://bestanimations.com/Animals/Mammals/Cats/Lions/animated-lion-gif-11.gif",
-          "votes": 0
-        },
-        {
-          "id": 5,
-          "name": "Mme. Panda",
-          "image": "https://media.giphy.com/media/ALalVMOVR8Qw/giphy.gif",
-          "votes": 0
-        }
-      ]
-    };
-  
-    // Firstly obtain the characterList container element
-    const characterList = document.getElementById("characterList");
-  
-    // Loop  the characters and create elements for display
-    charactersData.characters.forEach(character => {
-      // Make a div element for each character
-      const characterDiv = document.createElement("div");
-  
-      // Make an image element then set the source
-      const characterImage = document.createElement("img");
-      characterImage.src = character.image;
-  
-      // Make a heading element and then its text content
-      const characterName = document.createElement("h3");
-      characterName.textContent = character.name;
-  
-      // Attach the heading and image elements to the character div
-      characterDiv.appendChild(characterImage);
-      characterDiv.appendChild(characterName);
-  
-      // Attach the character div to the characterList container
-      characterList.appendChild(characterDiv);
+const CHARACTERS_URL = "http://localhost:3000/characters";
+const animalList = document.getElementById("animals-list");
+const animalDetailsContainer = document.getElementById("animal-details");
+const voteButton = document.getElementById("vote-button");
+const resetButton = document.getElementById("reset-button");
+const addAnimalForm = document.getElementById("add-animal-form");
+
+// Fetch animals from the URL
+async function fetchAnimals() {
+  try {
+    const response = await fetch("http://localhost:3000/characters");
+    const data = await response.json();
+    renderAnimals(data);
+  } catch (error) {
+    console.log("Error fetching animals:", error);
+  }
+}
+
+// Render the animals on the page
+function renderAnimals(data) {
+  animalList.innerHTML = "";
+  data.forEach((animal) => {
+    const li = document.createElement("li");
+    li.textContent = animal.name;
+    li.addEventListener("click", () => {
+      showAnimalDetails(animal);
     });
+    animalList.appendChild(li);
   });
+}
+
+// Show the details of the selected animal
+function showAnimalDetails(animal) {
+  animalDetailsContainer.innerHTML = `
+    <h2>${animal.name}</h2>
+    <img src="${animal.image}" alt="${animal.name}">
+    <p>Votes: <span id="vote-count">${animal.votes}</span></p>
+  `;
+
+  voteButton.disabled = false;
+  voteButton.addEventListener("click", () => {
+    incrementVotes(animal);
+  });
+}
+
+// Increment the votes for the selected animal
+function incrementVotes(animal) {
+  const voteCountElement = document.getElementById("vote-count");
+  animal.votes += 1;
+  voteCountElement.textContent = animal.votes;
+}
+
+// Reset the votes for all animals
+async function resetVotes() {
+  try {
+    const response = await fetch(CHARACTERS_URL);
+    const data = await response.json();
+    data.forEach((animal) => {
+      animal.votes = 0;
+    });
+
+    await fetch(CHARACTERS_URL, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    // Reset the UI
+    const voteCountElements = document.getElementsByClassName("vote-count");
+    Array.from(voteCountElements).forEach((element) => {
+      element.textContent = "0";
+    });
+  } catch (error) {
+    console.log("Error resetting votes:", error);
+  }
+}
+
+// Add a new animal
+async function addAnimal(event) {
+  event.preventDefault();
+
+  const nameInput = document.getElementById("animal-name");
+  const imageInput = document.getElementById("animal-image");
+
+  const newAnimal = {
+    name: nameInput.value,
+    image: imageInput.value,
+    votes: 0,
+  };
+
+  try {
+    await fetch(CHARACTERS_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newAnimal),
+    });
+
+    // Clear the form inputs
+    nameInput.value = "";
+    imageInput.value = "";
+
+    // Fetch and render the updated animals
+    fetchAnimals();
+  } catch (error) {
+    console.log("Error adding animal:", error);
+  }
+}
+
+// Event listeners
+resetButton.addEventListener("click", resetVotes);
+addAnimalForm.addEventListener("submit", addAnimal);
+
+// Fetch and render the animals
+fetchAnimals(); 
